@@ -1,8 +1,11 @@
 use diesel::SqliteConnection;
 
-use crate::user::{
-    adapter::repository::user::UserRepository,
-    domain::interface::interface::{IUserRepository, IUserUnitOfWork},
+use crate::{
+    database::connection::DbPool,
+    user::{
+        adapter::repository::user::UserRepository,
+        domain::interface::interface::{IUserRepository, IUserUnitOfWork},
+    },
 };
 
 pub struct UserUnitOfWork {
@@ -16,9 +19,9 @@ impl IUserUnitOfWork for UserUnitOfWork {
 }
 
 impl UserUnitOfWork {
-    pub fn new(db_conn: SqliteConnection) -> Self {
+    pub fn new(db_pool: DbPool) -> Self {
         UserUnitOfWork {
-            user_repo: UserRepository::new(db_conn),
+            user_repo: UserRepository::new(db_pool),
         }
     }
 }

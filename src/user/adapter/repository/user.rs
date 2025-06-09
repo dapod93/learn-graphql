@@ -1,11 +1,13 @@
 use crate::common::orm::user::UserSQL;
+use crate::database::connection::DbPool;
 use crate::database::schema::schema::users::dsl::*;
 use crate::user::domain::{entity::entity::User, interface::interface::IUserRepository};
 
+use diesel::r2d2::{ConnectionManager, PooledConnection};
 use diesel::{QueryDsl, prelude::*};
 
 pub struct UserRepository {
-    db_conn: SqliteConnection,
+    db_conn: PooledConnection<ConnectionManager<SqliteConnection>>,
 }
 
 impl IUserRepository for UserRepository {
@@ -18,8 +20,9 @@ impl IUserRepository for UserRepository {
 }
 
 impl UserRepository {
-    pub fn new(db_conn: SqliteConnection) -> Self {
-        UserRepository { db_conn }
+    pub fn new(db_pool: DbPool) -> Self {
+        let conn = db_pool.get().expect("Failed to get db conn from pool");
+        UserRepository { db_conn: conn }
     }
 
     fn model_to_entity(&self, model: UserSQL) -> User {

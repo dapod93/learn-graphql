@@ -1,24 +1,24 @@
-use diesel::SqliteConnection;
 use juniper::FieldResult;
 
-use crate::{router::graphql::DbPool, user::{
-    adapter::uow::internal::UserUnitOfWork, graphql::schema::response::GetUserByIdResponse,
-    service::service::get_user_by_id,
-}};
+use crate::{
+    database::connection::DbPool,
+    user::{
+        adapter::uow::internal::UserUnitOfWork, graphql::schema::response::GetUserByIdResponse,
+        service::service::get_user_by_id,
+    },
+};
 
 pub struct UserGraphQLController {
     db_pool: DbPool,
 }
 
 impl UserGraphQLController {
-    pub fn new(db_pool: ) -> Self {
-        UserGraphQLController { db_conn }
+    pub fn new(db_pool: DbPool) -> Self {
+        UserGraphQLController { db_pool }
     }
 
     pub fn get_user_by_id(&self, user_id: i32) -> FieldResult<GetUserByIdResponse> {
-        let db_conn
-
-        let user = get_user_by_id(UserUnitOfWork::new(self.db_conn), user_id);
+        let user = get_user_by_id(UserUnitOfWork::new(self.db_pool.clone()), user_id);
         Ok(GetUserByIdResponse {
             id: user.id,
             first_name: user.first_name,
