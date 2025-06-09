@@ -25,7 +25,7 @@ async fn graphql(st: web::Data<Schema>, data: web::Json<GraphQLRequest>) -> impl
 }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
     let schema = std::sync::Arc::new(create_schema());
