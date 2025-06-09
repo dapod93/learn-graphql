@@ -1,10 +1,10 @@
 use crate::user::domain::entity::entity::User;
 
-trait IUserRepository {
+pub trait IUserRepository {
     fn get_by_id(id: i32) -> User;
 }
 
-trait IUserUnitOfWork {
+pub trait IUserUnitOfWork {
     fn new();
 
     fn commit();
