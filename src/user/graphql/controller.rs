@@ -20,6 +20,8 @@ impl UserGraphQLController {
         UserGraphQLController { db_pool }
     }
 
+    pub fn create_user(&self) -> FieldResult<GetUserResponse> {}
+
     pub fn get_users(&self) -> FieldResult<Vec<Option<GetUserResponse>>> {
         Ok(get_users(UserUnitOfWork::new(self.db_pool.get()?))
             .into_iter()
