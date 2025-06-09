@@ -18,6 +18,10 @@ impl IUserRepository for UserRepository {
 }
 
 impl UserRepository {
+    pub fn new(db_conn: SqliteConnection) -> Self {
+        UserRepository { conn: db_conn }
+    }
+
     fn model_to_entity(&self, model: UserSQL) -> User {
         User {
             id: model.id,
