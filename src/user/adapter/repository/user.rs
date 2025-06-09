@@ -10,12 +10,21 @@ pub struct UserRepository {
 }
 
 impl IUserRepository for UserRepository {
+    fn get_all(&mut self) -> Vec<Option<User>> {
+        users
+            .load::<UserSQL>(&mut self.db_conn)
+            .unwrap_or_else(|_| vec![])
+            .into_iter()
+            .map(|model| self.model_to_entity(Some(model)))
+            .collect()
+    }
+
     fn get_by_id(&mut self, user_id: i32) -> Option<User> {
-        let query = QueryDsl::filter(users, id.eq(user_id))
+        QueryDsl::filter(users, id.eq(user_id))
             .first::<UserSQL>(&mut self.db_conn)
             .optional()
-            .expect("error fetching user");
-        self.model_to_entity(query)
+            .map(|model| self.model_to_entity(model))
+            .expect("error fetching user")
     }
 }
 
