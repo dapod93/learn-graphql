@@ -11,9 +11,11 @@ use actix_web::{
     App, HttpResponse, HttpServer, Responder, get, middleware, route,
     web::{self, Html},
 };
+use dotenvy::dotenv;
 use juniper::http::{GraphQLRequest, graphiql::graphiql_source};
 
 use crate::{
+    common::orm::database::DbConn,
     routes::ping::rping,
     schema::ping::{Schema, create_schema},
 };
@@ -31,7 +33,10 @@ async fn graphql(st: web::Data<Schema>, data: web::Json<GraphQLRequest>) -> impl
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    dotenv().ok();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+
+    let db_conn = DbConn::new();
 
     let schema = std::sync::Arc::new(create_schema());
     let port = 8081;
