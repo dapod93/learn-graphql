@@ -34,7 +34,7 @@ async fn graphql(
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("error"));
 
     let schema = Arc::new(GraphQLSchema::new(Arc::new(establish_connection())));
 

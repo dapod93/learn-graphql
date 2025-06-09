@@ -3,17 +3,24 @@ name = "learn-graphql"
 version = "1.0.0"
 edition = "2024"
 license = "MIT"
-license-file = "LICENSE"
 authors = [
     "dapod93 <davidliois50@gmail.com>",
 ]
 
 [dependencies]
 actix-cors = "0.7.1"
-actix-web  = "4.11.0"
-diesel = { version = "2.2.10", features = ["sqlite", "returning_clauses_for_sqlite_3_35", "r2d2"] }
+actix-web = "4.11.0"
+diesel = { version = "2.2.10", features = [
+    "sqlite",
+    "returning_clauses_for_sqlite_3_35",
+    "r2d2",
+] }
 dotenvy = "0.15.7"
 env_logger = "0.11.8"
-juniper    = "0.16.1"
-log        = "0.4.27"
-tokio = { version = "1.45.1", features = ["rt", "rt-multi-thread", "macros"] }
+juniper = "0.16.1"
+log = "0.4.27"
+tokio = { version = "1.45.1", features = [
+    "rt",
+    "rt-multi-thread",
+    "macros",
+] }
