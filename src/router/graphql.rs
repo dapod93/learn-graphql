@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use diesel::SqliteConnection;
 use juniper::{Context, EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 use crate::database::connection::DbPool;
