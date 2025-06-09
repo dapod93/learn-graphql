@@ -1,5 +1,10 @@
+#[path = "../database/schema/schema.rs"]
+mod database_schema;
+
+mod common;
 mod routes;
 mod schema;
+mod user;
 
 use actix_cors::Cors;
 use actix_web::{
