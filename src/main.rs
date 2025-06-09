@@ -9,7 +9,7 @@ use actix_web::{
 use juniper::http::{GraphQLRequest, graphiql::graphiql_source};
 
 use crate::{
-    routes::ping::Rping,
+    routes::ping::rping,
     schema::ping::{Schema, create_schema},
 };
 
@@ -36,7 +36,7 @@ async fn main() {
             .app_data(web::Data::from(schema.clone()))
             .service(graphql)
             .service(graphql_playground)
-            .service(Rping)
+            .service(rping)
             .wrap(Cors::permissive())
             .wrap(middleware::Logger::default())
     })

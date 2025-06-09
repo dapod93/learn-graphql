@@ -1,6 +1,6 @@
 use actix_web::get;
 
 #[get("/")]
-pub async fn Rping() -> String {
+pub async fn rping() -> String {
     format!("Pong!")
 }
