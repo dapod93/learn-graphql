@@ -3,7 +3,7 @@ use crate::database::schema::schema::users::dsl::*;
 use crate::user::domain::{entity::entity::User, interface::interface::IUserRepository};
 
 use diesel::associations::HasTable;
-use diesel::dsl::insert_into;
+use diesel::dsl::{insert_into, select};
 use diesel::r2d2::{ConnectionManager, PooledConnection};
 use diesel::{QueryDsl, prelude::*};
 
@@ -12,14 +12,18 @@ pub struct UserRepository {
 }
 
 impl IUserRepository for UserRepository {
-    fn create(&mut self, user: User) {
-        let _ = insert_into(users::table())
+    fn create(&mut self, user: User) -> User {
+        let user = insert_into(users::table())
             .values(&NewUserSQL {
                 email: user.email,
                 first_name: user.first_name,
                 last_name: user.last_name,
             })
-            .execute(&mut self.db_conn);
+            .get_result::<UserSQL>(&mut self.db_conn)
+            .expect("failed to create user");
+
+        self.model_to_entity(Some(user))
+            .expect("failed to unwrap model to entity")
     }
 
     fn get_all(&mut self) -> Vec<Option<User>> {

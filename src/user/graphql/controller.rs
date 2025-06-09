@@ -3,11 +3,13 @@ use std::sync::Arc;
 use juniper::{FieldError, FieldResult, graphql_value};
 
 use crate::{
-    database::connection::DbPool,
+    common::orm::user::NewUserSQL,
+    database::{connection::DbPool, schema::schema::users::last_name},
     user::{
         adapter::uow::internal::UserUnitOfWork,
+        domain::entity::entity::User,
         graphql::schema::{request::CreateUserRequest, response::GetUserResponse},
-        service::service::{get_user_by_email, get_user_by_id, get_users},
+        service::service::{create_user, get_user_by_email, get_user_by_id, get_users},
     },
 };
 
@@ -21,9 +23,20 @@ impl UserGraphQLController {
     }
 
     pub fn create_user(&self, req: CreateUserRequest) -> FieldResult<GetUserResponse> {
-        let user = get_user_by_email(UserUnitOfWork::new(self.db_pool.get()?), req.email);
+        let uow = UserUnitOfWork::new(self.db_pool.get()?);
+        let user = get_user_by_email(uow, req.email);
         match user {
-            None => None,
+            None => create_user(
+                uow,
+                User {
+                    id: (),
+                    first_name: req.first_name,
+                    last_name: req.last_name,
+                    email: req.email,
+                },
+            )
+            Ok(GetUserResponse { id, first_name, last_name, email })
+            ,
             Some(u) => None,
         }
     }

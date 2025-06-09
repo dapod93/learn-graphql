@@ -3,6 +3,10 @@ use crate::user::domain::{
     interface::interface::{IUserRepository, IUserUnitOfWork},
 };
 
+pub fn create_user(uow: impl IUserUnitOfWork, user: User) {
+    uow.user_repo().create(user);
+}
+
 pub fn get_users(uow: impl IUserUnitOfWork) -> Vec<Option<User>> {
     uow.user_repo().get_all()
 }
