@@ -9,3 +9,8 @@ authors = [
 ]
 
 [dependencies]
+actix-cors = "0.7.1"
+actix-web = "4.11.0"
+dotenv = "0.15.0"
+juniper = "0.16.1"
+log = "0.4.27"
