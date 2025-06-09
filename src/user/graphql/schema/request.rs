@@ -1,6 +1,6 @@
-use juniper::GraphQLObject;
+use juniper::GraphQLInputObject;
 
-#[derive(GraphQLObject)]
+#[derive(GraphQLInputObject)]
 #[graphql(description = "Create user request")]
 pub struct CreateUserRequest {
     pub first_name: String,

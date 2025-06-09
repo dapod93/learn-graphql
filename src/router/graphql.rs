@@ -1,8 +1,9 @@
 use std::sync::Arc;
 
-use juniper::{Context, EmptyMutation, EmptySubscription, FieldResult, RootNode};
+use juniper::{Context, EmptySubscription, FieldResult, RootNode};
 
 use crate::database::connection::DbPool;
+use crate::user::graphql::schema::request::CreateUserRequest;
 use crate::user::graphql::{controller::UserGraphQLController, schema::response::GetUserResponse};
 
 pub struct AppController {
@@ -36,23 +37,23 @@ pub struct MutationRoot;
 
 #[juniper::graphql_object(context = AppController)]
 impl MutationRoot {
-    // fn create_user(context: &AppController, req: )
+    fn create_user(
+        context: &AppController,
+        req: CreateUserRequest,
+    ) -> FieldResult<GetUserResponse> {
+        context.user_ctrl.create_user(req)
+    }
 }
 
 pub struct GraphQLSchema {
-    pub schema: RootNode<
-        'static,
-        QueryRoot,
-        EmptyMutation<AppController>,
-        EmptySubscription<AppController>,
-    >,
+    pub schema: RootNode<'static, QueryRoot, MutationRoot, EmptySubscription<AppController>>,
     pub context: AppController,
 }
 
 impl GraphQLSchema {
     pub fn new(db_pool: Arc<DbPool>) -> Self {
         let context = AppController::new(db_pool);
-        let schema = RootNode::new(QueryRoot {}, EmptyMutation::new(), EmptySubscription::new());
+        let schema = RootNode::new(QueryRoot {}, MutationRoot {}, EmptySubscription::new());
         GraphQLSchema { schema, context }
     }
 }
