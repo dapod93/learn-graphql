@@ -5,8 +5,5 @@ pub trait IUserRepository {
 }
 
 pub trait IUserUnitOfWork {
-    fn new();
-
-    fn commit();
-    fn rollback();
+    fn user_repo(self) -> impl IUserRepository;
 }

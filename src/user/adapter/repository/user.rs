@@ -5,13 +5,13 @@ use crate::user::domain::{entity::entity::User, interface::interface::IUserRepos
 use diesel::{QueryDsl, prelude::*};
 
 pub struct UserRepository {
-    conn: SqliteConnection,
+    db_conn: SqliteConnection,
 }
 
 impl IUserRepository for UserRepository {
     fn get_by_id(&mut self, user_id: i32) -> User {
         let query = QueryDsl::filter(users, id.eq(user_id))
-            .first::<UserSQL>(&mut self.conn)
+            .first::<UserSQL>(&mut self.db_conn)
             .expect("error fetching user");
         self.model_to_entity(query)
     }
@@ -19,7 +19,7 @@ impl IUserRepository for UserRepository {
 
 impl UserRepository {
     pub fn new(db_conn: SqliteConnection) -> Self {
-        UserRepository { conn: db_conn }
+        UserRepository { db_conn }
     }
 
     fn model_to_entity(&self, model: UserSQL) -> User {
