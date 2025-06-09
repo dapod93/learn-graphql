@@ -11,6 +11,10 @@ pub struct UserGraphQLController {
 }
 
 impl UserGraphQLController {
+    pub fn new(db_conn: SqliteConnection) -> Self {
+        UserGraphQLController { db_conn }
+    }
+
     pub fn get_user_by_id(self, user_id: i32) -> FieldResult<GetUserByIdResponse> {
         let user = get_user_by_id(UserUnitOfWork::new(self.db_conn), user_id);
         Ok(GetUserByIdResponse {

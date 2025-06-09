@@ -2,6 +2,7 @@
 mod database;
 
 mod common;
+mod router;
 mod routes;
 mod schema;
 mod user;
