@@ -3,8 +3,7 @@ use std::sync::Arc;
 use juniper::{FieldError, FieldResult, graphql_value};
 
 use crate::{
-    common::orm::user::NewUserSQL,
-    database::{connection::DbPool, schema::schema::users::last_name},
+    database::connection::DbPool,
     user::{
         adapter::uow::internal::UserUnitOfWork,
         domain::entity::entity::User,
@@ -23,12 +22,11 @@ impl UserGraphQLController {
     }
 
     pub fn create_user(&self, req: CreateUserRequest) -> FieldResult<GetUserResponse> {
-        let uow = UserUnitOfWork::new(self.db_pool.get()?);
-        let user = get_user_by_email(uow.clone(), req.email.clone());
-        match user {
+        let mut uow = UserUnitOfWork::new(self.db_pool.get()?);
+        match get_user_by_email(&mut uow, req.email.clone()) {
             None => {
                 let user = create_user(
-                    uow,
+                    &mut uow,
                     User {
                         id: None,
                         first_name: req.first_name,
@@ -51,7 +49,7 @@ impl UserGraphQLController {
     }
 
     pub fn get_users(&self) -> FieldResult<Vec<Option<GetUserResponse>>> {
-        Ok(get_users(UserUnitOfWork::new(self.db_pool.get()?))
+        Ok(get_users(&mut UserUnitOfWork::new(self.db_pool.get()?))
             .into_iter()
             .map(|us| {
                 us.map(|u| GetUserResponse {
@@ -65,7 +63,7 @@ impl UserGraphQLController {
     }
 
     pub fn get_user_by_id(&self, user_id: i32) -> FieldResult<GetUserResponse> {
-        match get_user_by_id(UserUnitOfWork::new(self.db_pool.get()?), user_id) {
+        match get_user_by_id(&mut UserUnitOfWork::new(self.db_pool.get()?), user_id) {
             None => Err(FieldError::new(
                 "User not found",
                 graphql_value!({"code": "NOT_FOUND"}),

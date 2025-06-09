@@ -8,14 +8,13 @@ use crate::user::{
     domain::interface::interface::{IUserRepository, IUserUnitOfWork},
 };
 
-#[derive(Clone)]
 pub struct UserUnitOfWork {
     user_repo: UserRepository,
 }
 
 impl IUserUnitOfWork for UserUnitOfWork {
-    fn user_repo(self) -> impl IUserRepository {
-        self.user_repo
+    fn user_repo(&mut self) -> &mut dyn IUserRepository {
+        &mut self.user_repo
     }
 }
 

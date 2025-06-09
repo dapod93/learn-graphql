@@ -1,4 +1,4 @@
-use crate::{common::orm::user::NewUserSQL, user::domain::entity::entity::User};
+use crate::user::domain::entity::entity::User;
 
 pub trait IUserRepository {
     fn create(&mut self, user: User) -> User;
@@ -10,5 +10,5 @@ pub trait IUserRepository {
 }
 
 pub trait IUserUnitOfWork {
-    fn user_repo(self) -> impl IUserRepository;
+    fn user_repo(&mut self) -> &mut dyn IUserRepository;
 }
