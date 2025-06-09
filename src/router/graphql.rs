@@ -32,6 +32,13 @@ impl QueryRoot {
     }
 }
 
+pub struct MutationRoot;
+
+#[juniper::graphql_object(context = AppController)]
+impl MutationRoot {
+    fn create_user(context: &AppController, req: )
+}
+
 pub struct GraphQLSchema {
     pub schema: RootNode<
         'static,
