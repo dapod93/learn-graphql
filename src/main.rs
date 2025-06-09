@@ -1,5 +1,5 @@
-#[path = "../database/schema/schema.rs"]
-mod database_schema;
+#[path = "../database/mod.rs"]
+mod database;
 
 mod common;
 mod routes;
