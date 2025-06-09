@@ -31,13 +31,20 @@ impl QueryRoot {
     }
 }
 
-pub struct GraphQLSchema(
-    RootNode<'static, QueryRoot, EmptyMutation<AppController>, EmptySubscription<AppController>>,
-);
+pub struct GraphQLSchema {
+    pub schema: RootNode<
+        'static,
+        QueryRoot,
+        EmptyMutation<AppController>,
+        EmptySubscription<AppController>,
+    >,
+    pub context: AppController,
+}
 
 impl GraphQLSchema {
-    pub fn new(db_conn: SqliteConnection) -> Self {
+    pub fn new(db_pool: Arc<DbPool>) -> Self {
+        let context = AppController::new(db_pool);
         let schema = RootNode::new(QueryRoot {}, EmptyMutation::new(), EmptySubscription::new());
-        GraphQLSchema(schema)
+        GraphQLSchema { schema, context }
     }
 }
