@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use diesel::SqliteConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
 use juniper::{Context, EmptyMutation, EmptySubscription, FieldResult, RootNode};
@@ -6,16 +8,15 @@ use crate::user::graphql::{
     controller::UserGraphQLController, schema::response::GetUserByIdResponse,
 };
 
-pub type DbPool = Pool<ConnectionManager<SqliteConnection>>;
-
 pub struct AppController {
-    user_ctrl: UserGraphQLController,
+    pub db_pool: Arc<DbPool>,
+    pub user_ctrl: UserGraphQLController,
 }
 
 impl AppController {
-    pub fn new(db_conn: SqliteConnection) -> Self {
+    pub fn new(db_pool: Arc<DbPool>) -> Self {
         AppController {
-            user_ctrl: UserGraphQLController::new(db_conn),
+            user_ctrl: UserGraphQLController::new(db_pool.clone()),
         }
     }
 }

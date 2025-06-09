@@ -16,7 +16,7 @@ use dotenvy::dotenv;
 use juniper::http::{GraphQLRequest, graphiql::graphiql_source};
 
 use crate::{
-    common::orm::database::DbConn,
+    database::connection::establish_connection,
     routes::ping::rping,
     schema::ping::{Schema, create_schema},
 };
@@ -37,7 +37,7 @@ async fn main() -> std::io::Result<()> {
     dotenv().ok();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    let db_conn = DbConn::new();
+    let db_pool = establish_connection();
 
     let schema = std::sync::Arc::new(create_schema());
     let port = 8081;
