@@ -1,7 +1,7 @@
 use crate::user::domain::entity::entity::User;
 
 pub trait IUserRepository {
-    fn get_by_id(id: i32) -> User;
+    fn get_by_id(&mut self, user_id: i32) -> User;
 }
 
 pub trait IUserUnitOfWork {
