@@ -34,13 +34,13 @@ async fn graphql(
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
-    env_logger::init_from_env(env_logger::Env::new().default_filter_or("error"));
+    env_logger::init_from_env(env_logger::Env::new().default_filter_or("debug"));
 
     let schema = Arc::new(GraphQLSchema::new(Arc::new(establish_connection())));
 
     HttpServer::new(move || {
         App::new()
-            .app_data(web::Data::from(schema.clone()))
+            .app_data(web::Data::new(schema.clone()))
             .service(graphql)
             .service(graphql_playground)
             .wrap(Cors::permissive())

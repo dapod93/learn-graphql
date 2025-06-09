@@ -10,9 +10,10 @@ pub struct UserRepository {
 }
 
 impl IUserRepository for UserRepository {
-    fn get_by_id(&mut self, user_id: i32) -> User {
+    fn get_by_id(&mut self, user_id: i32) -> Option<User> {
         let query = QueryDsl::filter(users, id.eq(user_id))
             .first::<UserSQL>(&mut self.db_conn)
+            .optional()
             .expect("error fetching user");
         self.model_to_entity(query)
     }
@@ -23,12 +24,15 @@ impl UserRepository {
         UserRepository { db_conn }
     }
 
-    fn model_to_entity(&self, model: UserSQL) -> User {
-        User {
-            id: model.id,
-            first_name: model.first_name,
-            last_name: model.last_name,
-            email: model.email,
+    fn model_to_entity(&self, model: Option<UserSQL>) -> Option<User> {
+        match model {
+            None => None,
+            Some(m) => Some(User {
+                id: m.id,
+                first_name: m.first_name,
+                last_name: m.last_name,
+                email: m.email,
+            }),
         }
     }
 }
