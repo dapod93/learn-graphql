@@ -5,8 +5,9 @@ use juniper::{FieldError, FieldResult, graphql_value};
 use crate::{
     database::connection::DbPool,
     user::{
-        adapter::uow::internal::UserUnitOfWork, graphql::schema::response::GetUserResponse,
-        service::service::get_user_by_id,
+        adapter::uow::internal::UserUnitOfWork,
+        graphql::schema::response::GetUserResponse,
+        service::service::{get_user_by_id, get_users},
     },
 };
 
@@ -19,7 +20,19 @@ impl UserGraphQLController {
         UserGraphQLController { db_pool }
     }
 
-    pub fn get_users(&self) -> FieldResult<Vec<GetUserResponse>> {}
+    pub fn get_users(&self) -> FieldResult<Vec<Option<GetUserResponse>>> {
+        Ok(get_users(UserUnitOfWork::new(self.db_pool.get()?))
+            .into_iter()
+            .map(|us| {
+                us.map(|u| GetUserResponse {
+                    id: u.id,
+                    first_name: u.first_name,
+                    last_name: u.last_name,
+                    email: u.email,
+                })
+            })
+            .collect())
+    }
 
     pub fn get_user_by_id(&self, user_id: i32) -> FieldResult<GetUserResponse> {
         match get_user_by_id(UserUnitOfWork::new(self.db_pool.get()?), user_id) {
