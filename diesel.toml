@@ -3,7 +3,10 @@
 
 [print_schema]
 file = "src/schema.rs"
-custom_type_derives = ["diesel::query_builder::QueryId", "Clone"]
+custom_type_derives = [
+    "diesel::query_builder::QueryId",
+    "Clone",
+]
 
 [migrations_directory]
-dir = "/home/dapod93/personal/learn/learn-graphql/migrations"
+dir = "database/migrations"
