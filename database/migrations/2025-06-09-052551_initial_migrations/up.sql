@@ -3,6 +3,5 @@ CREATE TABLE IF NOT EXISTS users (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     first_name VARCHAR NOT NULL,
     last_name VARCHAR NOT NULL,
-    email VARCHAR NOT NULL,
-    CONSTRAINT unique_value UNIQUE (id, email)
+    email VARCHAR NOT NULL UNIQUE
 )
