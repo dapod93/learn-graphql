@@ -1,9 +1,12 @@
 use diesel::SqliteConnection;
+use diesel::r2d2::{ConnectionManager, Pool};
 use juniper::{Context, EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 use crate::user::graphql::{
     controller::UserGraphQLController, schema::response::GetUserByIdResponse,
 };
+
+pub type DbPool = Pool<ConnectionManager<SqliteConnection>>;
 
 pub struct AppController {
     user_ctrl: UserGraphQLController,
