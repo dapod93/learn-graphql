@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use diesel::SqliteConnection;
-use diesel::r2d2::{ConnectionManager, Pool};
 use juniper::{Context, EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 use crate::database::connection::DbPool;
@@ -10,7 +9,6 @@ use crate::user::graphql::{
 };
 
 pub struct AppController {
-    pub db_pool: Arc<DbPool>,
     pub user_ctrl: UserGraphQLController,
 }
 
@@ -28,7 +26,7 @@ pub struct QueryRoot;
 
 #[juniper::graphql_object(context = AppController)]
 impl QueryRoot {
-    fn get_user_by_id(context: AppController, user_id: i32) -> FieldResult<GetUserByIdResponse> {
+    fn get_user_by_id(context: &AppController, user_id: i32) -> FieldResult<GetUserByIdResponse> {
         context.user_ctrl.get_user_by_id(user_id)
     }
 }
