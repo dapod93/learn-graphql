@@ -1,1 +1,2 @@
-pub mod http;
+pub mod api;
+pub mod schema;
