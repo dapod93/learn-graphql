@@ -3,7 +3,7 @@ use crate::database::schema::schema::users::dsl::*;
 use crate::user::domain::{entity::entity::User, interface::interface::IUserRepository};
 
 use diesel::associations::HasTable;
-use diesel::dsl::{insert_into, select};
+use diesel::dsl::insert_into;
 use diesel::r2d2::{ConnectionManager, PooledConnection};
 use diesel::{QueryDsl, prelude::*};
 
@@ -61,7 +61,7 @@ impl UserRepository {
         match model {
             None => None,
             Some(m) => Some(User {
-                id: m.id,
+                id: Some(m.id),
                 first_name: m.first_name,
                 last_name: m.last_name,
                 email: m.email,

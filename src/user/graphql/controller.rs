@@ -24,20 +24,29 @@ impl UserGraphQLController {
 
     pub fn create_user(&self, req: CreateUserRequest) -> FieldResult<GetUserResponse> {
         let uow = UserUnitOfWork::new(self.db_pool.get()?);
-        let user = get_user_by_email(uow, req.email);
+        let user = get_user_by_email(uow.clone(), req.email.clone());
         match user {
-            None => create_user(
-                uow,
-                User {
-                    id: (),
-                    first_name: req.first_name,
-                    last_name: req.last_name,
-                    email: req.email,
-                },
-            )
-            Ok(GetUserResponse { id, first_name, last_name, email })
-            ,
-            Some(u) => None,
+            None => {
+                let user = create_user(
+                    uow,
+                    User {
+                        id: None,
+                        first_name: req.first_name,
+                        last_name: req.last_name,
+                        email: req.email,
+                    },
+                );
+                Ok(GetUserResponse {
+                    id: user.id.unwrap(),
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    email: user.email,
+                })
+            }
+            Some(_) => Err(FieldError::new(
+                "User alread exists",
+                graphql_value!({"code": "CONFLICT"}),
+            )),
         }
     }
 
@@ -46,7 +55,7 @@ impl UserGraphQLController {
             .into_iter()
             .map(|us| {
                 us.map(|u| GetUserResponse {
-                    id: u.id,
+                    id: u.id.unwrap(),
                     first_name: u.first_name,
                     last_name: u.last_name,
                     email: u.email,
@@ -62,7 +71,7 @@ impl UserGraphQLController {
                 graphql_value!({"code": "NOT_FOUND"}),
             )),
             Some(u) => Ok(GetUserResponse {
-                id: u.id,
+                id: u.id.unwrap(),
                 first_name: u.first_name,
                 last_name: u.last_name,
                 email: u.email,

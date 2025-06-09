@@ -8,6 +8,7 @@ use crate::user::{
     domain::interface::interface::{IUserRepository, IUserUnitOfWork},
 };
 
+#[derive(Clone)]
 pub struct UserUnitOfWork {
     user_repo: UserRepository,
 }
