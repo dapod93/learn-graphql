@@ -4,6 +4,7 @@ use diesel::SqliteConnection;
 use diesel::r2d2::{ConnectionManager, Pool};
 use juniper::{Context, EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
+use crate::database::connection::DbPool;
 use crate::user::graphql::{
     controller::UserGraphQLController, schema::response::GetUserByIdResponse,
 };
@@ -16,7 +17,7 @@ pub struct AppController {
 impl AppController {
     pub fn new(db_pool: Arc<DbPool>) -> Self {
         AppController {
-            user_ctrl: UserGraphQLController::new(db_pool.clone()),
+            user_ctrl: UserGraphQLController::new(db_pool),
         }
     }
 }

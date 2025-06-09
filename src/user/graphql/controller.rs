@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use juniper::FieldResult;
 
 use crate::{
@@ -9,16 +11,16 @@ use crate::{
 };
 
 pub struct UserGraphQLController {
-    db_pool: DbPool,
+    db_pool: Arc<DbPool>,
 }
 
 impl UserGraphQLController {
-    pub fn new(db_pool: DbPool) -> Self {
+    pub fn new(db_pool: Arc<DbPool>) -> Self {
         UserGraphQLController { db_pool }
     }
 
     pub fn get_user_by_id(&self, user_id: i32) -> FieldResult<GetUserByIdResponse> {
-        let user = get_user_by_id(UserUnitOfWork::new(self.db_pool.clone()), user_id);
+        let user = get_user_by_id(UserUnitOfWork::new(self.db_pool.get()?), user_id);
         Ok(GetUserByIdResponse {
             id: user.id,
             first_name: user.first_name,

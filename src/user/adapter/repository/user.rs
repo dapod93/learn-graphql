@@ -1,5 +1,4 @@
 use crate::common::orm::user::UserSQL;
-use crate::database::connection::DbPool;
 use crate::database::schema::schema::users::dsl::*;
 use crate::user::domain::{entity::entity::User, interface::interface::IUserRepository};
 
@@ -20,9 +19,8 @@ impl IUserRepository for UserRepository {
 }
 
 impl UserRepository {
-    pub fn new(db_pool: DbPool) -> Self {
-        let conn = db_pool.get().expect("Failed to get db conn from pool");
-        UserRepository { db_conn: conn }
+    pub fn new(db_conn: PooledConnection<ConnectionManager<SqliteConnection>>) -> Self {
+        UserRepository { db_conn }
     }
 
     fn model_to_entity(&self, model: UserSQL) -> User {
