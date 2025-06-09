@@ -1,9 +1,9 @@
 use diesel::{Selectable, prelude::Queryable};
 
-use crate::database_schema;
+use crate::database::schema::schema::users;
 
 #[derive(Queryable, Selectable)]
-#[diesel(table_name= database_schema::users )]
+#[diesel(table_name= users )]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct User {
     pub id: i32,
