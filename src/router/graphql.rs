@@ -3,9 +3,7 @@ use std::sync::Arc;
 use juniper::{Context, EmptyMutation, EmptySubscription, FieldResult, RootNode};
 
 use crate::database::connection::DbPool;
-use crate::user::graphql::{
-    controller::UserGraphQLController, schema::response::GetUserByIdResponse,
-};
+use crate::user::graphql::{controller::UserGraphQLController, schema::response::GetUserResponse};
 
 pub struct AppController {
     pub user_ctrl: UserGraphQLController,
@@ -25,7 +23,11 @@ pub struct QueryRoot;
 
 #[juniper::graphql_object(context = AppController)]
 impl QueryRoot {
-    fn get_user_by_id(context: &AppController, user_id: i32) -> FieldResult<GetUserByIdResponse> {
+    fn get_users(context: &AppController) -> FieldResult<Vec<Option<GetUserResponse>>> {
+        context.user_ctrl.get_users()
+    }
+
+    fn get_user_by_id(context: &AppController, user_id: i32) -> FieldResult<GetUserResponse> {
         context.user_ctrl.get_user_by_id(user_id)
     }
 }
