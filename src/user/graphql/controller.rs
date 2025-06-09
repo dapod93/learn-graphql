@@ -6,8 +6,8 @@ use crate::{
     database::connection::DbPool,
     user::{
         adapter::uow::internal::UserUnitOfWork,
-        graphql::schema::response::GetUserResponse,
-        service::service::{get_user_by_id, get_users},
+        graphql::schema::{request::CreateUserRequest, response::GetUserResponse},
+        service::service::{get_user_by_email, get_user_by_id, get_users},
     },
 };
 
@@ -20,7 +20,13 @@ impl UserGraphQLController {
         UserGraphQLController { db_pool }
     }
 
-    pub fn create_user(&self) -> FieldResult<GetUserResponse> {}
+    pub fn create_user(&self, req: CreateUserRequest) -> FieldResult<GetUserResponse> {
+        let user = get_user_by_email(UserUnitOfWork::new(self.db_pool.get()?), req.email);
+        match user {
+            None => None,
+            Some(u) => None,
+        }
+    }
 
     pub fn get_users(&self) -> FieldResult<Vec<Option<GetUserResponse>>> {
         Ok(get_users(UserUnitOfWork::new(self.db_pool.get()?))

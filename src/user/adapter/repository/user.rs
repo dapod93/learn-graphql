@@ -1,7 +1,9 @@
-use crate::common::orm::user::UserSQL;
+use crate::common::orm::user::{NewUserSQL, UserSQL};
 use crate::database::schema::schema::users::dsl::*;
 use crate::user::domain::{entity::entity::User, interface::interface::IUserRepository};
 
+use diesel::associations::HasTable;
+use diesel::dsl::insert_into;
 use diesel::r2d2::{ConnectionManager, PooledConnection};
 use diesel::{QueryDsl, prelude::*};
 
@@ -10,6 +12,16 @@ pub struct UserRepository {
 }
 
 impl IUserRepository for UserRepository {
+    fn create(&mut self, user: User) {
+        let _ = insert_into(users::table())
+            .values(&NewUserSQL {
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+            })
+            .execute(&mut self.db_conn);
+    }
+
     fn get_all(&mut self) -> Vec<Option<User>> {
         users
             .load::<UserSQL>(&mut self.db_conn)
@@ -24,7 +36,15 @@ impl IUserRepository for UserRepository {
             .first::<UserSQL>(&mut self.db_conn)
             .optional()
             .map(|model| self.model_to_entity(model))
-            .expect("error fetching user")
+            .expect("error fetching user by id")
+    }
+
+    fn get_by_email(&mut self, email_string: String) -> Option<User> {
+        QueryDsl::filter(users, email.eq(email_string))
+            .first::<UserSQL>(&mut self.db_conn)
+            .optional()
+            .map(|model| self.model_to_entity(model))
+            .expect("error fetching user by email")
     }
 }
 
