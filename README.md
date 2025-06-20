@@ -16,11 +16,11 @@ With DDD architecture.
 To serve the server please use this command if you have Make CLI installed:
 
 ```bash
-    make serve
+make serve
 ```
 
 If not please use this:
 
 ```bash
-	cargo watch -x run
+cargo watch -x run
 ```
